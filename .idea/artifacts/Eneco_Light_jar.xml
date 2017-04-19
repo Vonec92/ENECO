@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Eneco_Light:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Eneco_Light_jar</output-path>
+    <root id="archive" name="Eneco_Light.jar">
+      <element id="module-output" name="Eneco_Light" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../json-to-csv-master/lib/commons-beanutils-1.7.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../json-to-csv-master/lib/ezmorph-0.8.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../json-to-csv-master/lib/commons-logging-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../json-to-csv-master/lib/json-lib-0.8.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

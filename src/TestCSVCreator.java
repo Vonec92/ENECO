@@ -18,6 +18,7 @@ public class TestCSVCreator {
         File path;
         String newPath = " ";
         String formattedPath;
+        String auth = " ";
 
 
         JFileChooser chooser = new JFileChooser();
@@ -42,7 +43,7 @@ public class TestCSVCreator {
 
         formattedPath = newPath + "\\\\";
 
-        csv.createCsv(formattedPath);
+        csv.createCsv(formattedPath,auth);
 
         }
 

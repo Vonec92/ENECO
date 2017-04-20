@@ -1,10 +1,7 @@
 
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,21 +18,24 @@ public class CSVCreator {
     private ArrayList<String> fieldIds;
 
     private FormRetriever fRetriever;
-    private DataRetrieverV2 dRetriever;
+    private DataRetriever dRetriever;
 
     private void initialize() {
 
         this.formMap = new HashMap<>();
         this.formIds = new ArrayList<>();
         this.fRetriever = new FormRetriever();
-        this.dRetriever = new DataRetrieverV2();
+        this.dRetriever = new DataRetriever();
     }
 
-    public void createCsv(String path) throws Exception {
+    public void createCsv(String path, String auth) throws Exception {
 
         initialize();
 
-        fRetriever.getForms();
+        fRetriever.setAuth(auth);
+
+        String dataAuth = fRetriever.getAuth();
+        fRetriever.getForms(fRetriever.getAuth());
 
         formMap = fRetriever.getAllFormsData();
         dataMap = dRetriever.getMap();
@@ -62,7 +62,7 @@ public class CSVCreator {
 
             sb.append('\n');
 
-            dRetriever.getData(Integer.parseInt(ids));
+            dRetriever.getData(Integer.parseInt(ids),dataAuth);
             dataMap = dRetriever.getMap();
 
             for(String key : dataMap.keySet()){

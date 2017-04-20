@@ -22,12 +22,13 @@ public class FormRetriever {
 
     private HashMap<String, HashMap<String, String>> allFormsData = new HashMap<>();
     private HashMap<String, String> formNames = new HashMap<>();
+    private String auth;
 
     private ArrayList<String> formId = new ArrayList<>();
      private ArrayList<String> fieldIds = new ArrayList<>();
 
 
-    public void getForms() throws Exception {
+    public void getForms(String auth) throws Exception {
 
         //URL TO GET ALL FORM DATA.
         String url = "https://secure.p06.eloqua.com/api/REST/2.0/assets/forms";
@@ -46,8 +47,8 @@ public class FormRetriever {
 
         //AUTHORIZATION FOR FIRST CALL
         BASE64Encoder enc = new BASE64Encoder();
-        String authstring = "ENECO\\Vone.Cloots:Mmis19925577.";
-        String encodedAuthorization = enc.encode(authstring.getBytes());
+         //auth = "ENECO\\Vone.Cloots:Mmis19925577.";
+        String encodedAuthorization = enc.encode(auth.getBytes());
         con.setRequestProperty("Authorization", "Basic " +
                 encodedAuthorization);
 
@@ -93,8 +94,8 @@ public class FormRetriever {
 
             //AUTHORIZATION FOR SECOND CALL
             BASE64Encoder enc2 = new BASE64Encoder();
-            String authstring2 = "ENECO\\Vone.Cloots:Mmis19925577.";
-            String encodedAuthorization2 = enc2.encode(authstring2.getBytes());
+            //String authstring = "ENECO\\Vone.Cloots:Mmis19925577.";
+            String encodedAuthorization2 = enc2.encode(auth.getBytes());
             con2.setRequestProperty("Authorization", "Basic " +
                     encodedAuthorization2);
 
@@ -133,6 +134,9 @@ public class FormRetriever {
 
     }
 
+    public String setAuth(String auth){ this.auth = auth; return auth; }
+
+    public String getAuth(){ return this.auth; }
 
     public HashMap<String, HashMap<String, String>> getAllFormsData() {
         return allFormsData;
@@ -149,6 +153,7 @@ public class FormRetriever {
     public HashMap<String, String> getFormNames() {
         return formNames;
     }
+
 }
 
 

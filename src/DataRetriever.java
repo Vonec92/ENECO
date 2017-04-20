@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Created by clootvo on 17/04/2017.
  */
-public class DataRetrieverV2 {
+public class DataRetriever {
     /**
      * Author: Vone Cloots
      **/
@@ -27,11 +27,12 @@ public class DataRetrieverV2 {
         private HashMap<String,HashMap<String,String>> map = new HashMap<>();
         private ArrayList<String> fieldIds = new ArrayList<>();
 
+
     private final int FIELD_VALUE_LENGTH = 3;
 
-        public void getData(int id) throws Exception {
+        public void getData(int id, String auth) throws Exception {
 
-
+            FormRetriever fRetriever  = new FormRetriever();
             //URL TO GET FORM FR GIVEN A SPECIFIC ID.
 
             String url = "https://secure.p06.eloqua.com/api/REST/2.0/data/form/" + id;
@@ -43,8 +44,8 @@ public class DataRetrieverV2 {
 
             //AUTHORIZATION FOR SECOND CALL
             BASE64Encoder enc = new BASE64Encoder();
-            String authstring = "ENECO\\Vone.Cloots:Mmis19925577." ;
-            String encodedAuthorization = enc.encode(authstring.getBytes());
+            //String authstring = "ENECO\\Vone.Cloots:Mmis19925577." ;
+            String encodedAuthorization = enc.encode(auth.getBytes());
             con.setRequestProperty("Authorization", "Basic " +
                     encodedAuthorization);
 
@@ -94,7 +95,6 @@ public class DataRetrieverV2 {
 
 
         }
-
 
     public HashMap<String, HashMap<String, String>> getMap() {
                 return map;

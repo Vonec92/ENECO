@@ -16,16 +16,15 @@ public class CSVCreator {
 
     private ArrayList<String> formIds;
     private ArrayList<String> fieldIds;
-
     private FormRetriever fRetriever;
-    private DataRetriever dRetriever;
+
 
     private void initialize() {
 
         this.formMap = new HashMap<>();
         this.formIds = new ArrayList<>();
         this.fRetriever = new FormRetriever();
-        this.dRetriever = new DataRetriever();
+
     }
 
     public void createCsv(String path, String auth) throws Exception {
@@ -38,7 +37,6 @@ public class CSVCreator {
         fRetriever.getForms(fRetriever.getAuth());
 
         formMap = fRetriever.getAllFormsData();
-        dataMap = dRetriever.getMap();
         formNames = fRetriever.getFormNames();
 
         formIds = fRetriever.getFormId();
@@ -62,7 +60,9 @@ public class CSVCreator {
 
             sb.append('\n');
 
+            DataRetriever dRetriever = new DataRetriever();
             dRetriever.getData(Integer.parseInt(ids),dataAuth);
+
             dataMap = dRetriever.getMap();
 
             for(String key : dataMap.keySet()){

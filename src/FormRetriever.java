@@ -74,7 +74,7 @@ public class FormRetriever {
         JSONArray recs = formIdJson.getJSONArray("elements");
         JSONArray fieldNameId;
 
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 5; ++i) {
             JSONObject rec = recs.getJSONObject(i);
 
             String id = rec.getString("id");

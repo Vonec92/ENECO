@@ -100,9 +100,6 @@ public class DataRetriever {
                 return map;
             }
 
-    public ArrayList<String> getFieldIds() {
-        return fieldIds;
-    }
 
 }
 

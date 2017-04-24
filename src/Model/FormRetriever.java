@@ -1,3 +1,4 @@
+package Model;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -8,7 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-/**Author: Vone Cloots **/
+/**
+ * Author: Vone Cloots
+ **/
 
 @SuppressWarnings("unchecked")
 
@@ -17,15 +20,12 @@ import java.util.*;
 public class FormRetriever {
 
 
-    //1. lijst me alle forms ophalen
-    //2. voor iedere form de velden gaan ophalen en opslaan in een hashmap.
-
     private HashMap<String, HashMap<String, String>> allFormsData = new HashMap<>();
     private HashMap<String, String> formNames = new HashMap<>();
-    private String auth;
 
     private ArrayList<String> formId = new ArrayList<>();
-     private ArrayList<String> fieldIds = new ArrayList<>();
+
+    private String auth;
 
 
     public void getForms(String auth) throws Exception {
@@ -43,7 +43,6 @@ public class FormRetriever {
         con.setRequestMethod("GET");
 
         //ELOQUA Authentication for company: ENECO
-        //STILL USES BASIC AUTHORIZATION -> OAUTH IS RECOMMENDED (29/03)
 
         //AUTHORIZATION FOR FIRST CALL
         BASE64Encoder enc = new BASE64Encoder();
@@ -109,21 +108,22 @@ public class FormRetriever {
             }
             in2.close();
 
+            //CREATE A JSON OBJECT AND GET ARRAY WITH ALL ELEMENTS.
             JSONObject fieldNameJson = new JSONObject(response2.toString());
             fieldNameId = fieldNameJson.getJSONArray("elements");
 
 
             HashMap<String, String> formData = new HashMap<>();
-            //formData.put("FORM_NAME " , formName);
 
             for (int j = 0; j < fieldNameId.length(); j++) {
+
+                //GET ALL HEADER NAMES PER FORM
 
                 JSONObject jsonFields = JSONObject.fromBean(fieldNameId.get(j));
 
                 String fieldName = (String) jsonFields.get("name");
                 String fieldId = (String) jsonFields.get("id");
                 formData.put(fieldId, fieldName);
-                fieldIds.add(fieldId);
 
             }
 
@@ -144,10 +144,6 @@ public class FormRetriever {
 
     public ArrayList<String> getFormId() {
         return formId;
-    }
-
-    public ArrayList<String> getFieldIds() {
-        return fieldIds;
     }
 
     public HashMap<String, String> getFormNames() {

@@ -1,49 +1,42 @@
-
+package Model;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import sun.misc.BASE64Encoder;
-
-import javax.security.auth.Subject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by clootvo on 17/04/2017.
- */
+ * Author: Vone Cloots
+ **/
+
 public class DataRetriever {
-    /**
-     * Author: Vone Cloots
-     **/
 
     @SuppressWarnings("unchecked")
-    //GET ALL FORM ID'S.
+
+    //DECLARE GLOBAL HASHMAP TO STORE ALL DATA FROM A FORM.
+    private HashMap<String,HashMap<String,String>> map = new HashMap<>();
 
 
-        private HashMap<String,HashMap<String,String>> map = new HashMap<>();
-        private ArrayList<String> fieldIds = new ArrayList<>();
+    public void getData(int id, String auth) throws Exception { // ID AND LOGIN CREDENTIALS ARE NEEDED TO RETRIEVE DATA.
 
+            /*START API CALL**/
 
-    private final int FIELD_VALUE_LENGTH = 3;
-
-        public void getData(int id, String auth) throws Exception {
-
-            FormRetriever fRetriever  = new FormRetriever();
-            //URL TO GET FORM FR GIVEN A SPECIFIC ID.
-
+            //URL TO GET FORM DATA GIVEN A SPECIFIC ID.
             String url = "https://secure.p06.eloqua.com/api/REST/2.0/data/form/" + id;
             URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection(); //OPEN CONNECTION
 
             //GET REQUEST
             con.setRequestMethod("GET");
 
-            //AUTHORIZATION FOR SECOND CALL
-            BASE64Encoder enc = new BASE64Encoder();
+            //AUTHORIZATION FOR CALL.
+            //For HTTP basic authentication, each request must include an Authentication header, with a base-64 encoded value.
+
+            BASE64Encoder enc = new BASE64Encoder(); //
             //String authstring = "ENECO\\Vone.Cloots:Mmis19925577." ;
             String encodedAuthorization = enc.encode(auth.getBytes());
             con.setRequestProperty("Authorization", "Basic " +
@@ -55,11 +48,17 @@ public class DataRetriever {
             String inputLine;
             StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
+
+                //OUTPUT FROM API CALL
                 response.append(inputLine);
+
             }
 
             in.close();
 
+            /* END API CALL*/
+
+            //CREATE JSON OBJECTS AND GET ARRAY WITH ALL ELEMENTS.
             JSONObject FormDataJson = new JSONObject(response.toString());
             JSONArray elementsArray = FormDataJson.getJSONArray("elements");
 
@@ -67,6 +66,7 @@ public class DataRetriever {
 
             for (int j = 0; j < elementsArray.length(); j++) {
 
+                //LOOP OVER ELEMENT ARRAY AND RETRIEVE SUBMITTER ID AND THEIR FORM FIELDS.
                 JSONObject dataFields = JSONObject.fromBean(elementsArray.get(j));
                 String submitterID = dataFields.getString("id");
                 JSONArray data = dataFields.getJSONArray("fieldValues");
@@ -75,18 +75,20 @@ public class DataRetriever {
 
                 for (int v = 0; v < data.length(); v++) {
 
+                    //RETRIEVE FORM FIELD ID + VALUE
                     JSONObject values = JSONObject.fromBean(data.get(v));
 
-                    if (values.length() == FIELD_VALUE_LENGTH) {
+                    int fieldValueLength = 3;// MAKE SURE WE RETRIEVE FORMS WITH ACTUAL VALUES
+                    if (values.length() == fieldValueLength) {
                         String dataId = (String) values.get("id");
                         String value = (String) values.get("value");
                         formData.put(dataId, value);
-                        fieldIds.add(dataId);
+
                     }
-                    map.put(submitterID, formData);
+                    map.put(submitterID, formData); //SUBMITTER ID + FORM DATA ARE KEPT IN AN HASH MAP.
 
 
-                    if(map.get(submitterID).isEmpty()){
+                    if(map.get(submitterID).isEmpty()){ //REMOVE EMPTY FIELDS FROM HASH MAP.
                         map.remove(submitterID);
                     }
                 }

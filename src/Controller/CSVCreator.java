@@ -1,4 +1,7 @@
+package Controller;
 
+import Model.DataRetriever;
+import Model.FormRetriever;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -6,22 +9,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by clootvo on 12/04/2017.
+ * Created by Vone.
  */
+
 public class CSVCreator {
 
-    private HashMap<String, HashMap<String, String>> formMap;
-    private HashMap<String,HashMap<String,String>> dataMap;
-    private HashMap<String, String> formNames = new HashMap<>();
-
+    //GLOBAL VARIABLES
+    private HashMap<String, HashMap<String, String>> allFormData;
     private ArrayList<String> formIds;
-    private ArrayList<String> fieldIds;
     private FormRetriever fRetriever;
 
 
     private void initialize() {
 
-        this.formMap = new HashMap<>();
+        //INITIALIZING GLOBAL VARIABLES
+        this.allFormData = new HashMap<>();
         this.formIds = new ArrayList<>();
         this.fRetriever = new FormRetriever();
 
@@ -31,29 +33,34 @@ public class CSVCreator {
 
         initialize();
 
+        //SET & GET AUTHORIZATION FOR API CALLS
         fRetriever.setAuth(auth);
-
         String dataAuth = fRetriever.getAuth();
-        fRetriever.getForms(fRetriever.getAuth());
 
-        formMap = fRetriever.getAllFormsData();
-        formNames = fRetriever.getFormNames();
+
+        //GET ALL FORMS
+        fRetriever.getForms(dataAuth);
+
+        allFormData = fRetriever.getAllFormsData();
+        HashMap<String, String> formNames = fRetriever.getFormNames();
 
         formIds = fRetriever.getFormId();
-        fieldIds = fRetriever.getFieldIds();
+
 
         for (String ids : formIds) {
 
+            //CREATE A CSV FILE FOR RETRIEVED .
             String formName = formNames.get(ids);
             File file = new File(path + formName + ".csv");
             Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_16LE);
+
             StringBuilder sb = new StringBuilder();
             ArrayList<String> formFieldIds = new ArrayList<>();
 
-            for (String fieldid : formMap.get(ids).keySet()) {
+            for (String fieldid : allFormData.get(ids).keySet()) {
 
-
-                    sb.append(formMap.get(ids).get(fieldid));
+                    //GET FORM HEADERS AND APPEND TO THE STRING BUILDER.
+                    sb.append(allFormData.get(ids).get(fieldid)); // --> GET HEADER
                     sb.append(',');
                     formFieldIds.add(fieldid);
             }
@@ -61,14 +68,16 @@ public class CSVCreator {
             sb.append('\n');
 
             DataRetriever dRetriever = new DataRetriever();
-            dRetriever.getData(Integer.parseInt(ids),dataAuth);
+            dRetriever.getData(Integer.parseInt(ids),dataAuth); // -> GET FORM DATA
 
-            dataMap = dRetriever.getMap();
+            HashMap<String, HashMap<String, String>> dataMap = dRetriever.getMap();
 
             for(String key : dataMap.keySet()){
 
+             //MAP HEADER TO RETRIEVED FORM DATA
               HashMap<String,String>  fieldMap =  dataMap.get(key);
               String[] fields  = new String [formFieldIds.size()];
+
 
               for(String keyTwo : fieldMap.keySet()) {
 
@@ -80,6 +89,7 @@ public class CSVCreator {
 
               }
 
+              //APPEND FORM DATA TO STRING BUILDER.
               for(String field : fields){
 
                   if (field == null){
